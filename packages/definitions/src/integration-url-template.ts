@@ -4,7 +4,10 @@ import { integrationIconSlugs } from "./docker-integration-match";
 import type { IntegrationKind } from "./integration";
 import { getIntegrationDefaultPort } from "./integration";
 
-export type UrlTemplateMode = "hostPort" | "subdomain" | "path";
+// "hostPortHttps" is "hostPort" for hosts that serve every port over HTTPS (for example `tailscale serve`).
+export type UrlTemplateMode = "hostPort" | "hostPortHttps" | "subdomain" | "path";
+
+export const isHostPortMode = (mode: UrlTemplateMode) => mode === "hostPort" || mode === "hostPortHttps";
 
 const getSlugForKind = (kind: IntegrationKind): string => integrationIconSlugs[kind];
 
@@ -35,9 +38,12 @@ const buildUrl = (slug: string, rawHost: string, mode: UrlTemplateMode, port?: n
   const base = normalizeBaseHost(rawHost);
   if (!base) return "";
   const effectivePort = port ?? base.port;
+  const hostPortUrl = (scheme: "http" | "https") =>
+    effectivePort ? `${scheme}://${base.hostname}:${effectivePort}` : `${scheme}://${base.hostname}`;
   const modeBuilders: Record<UrlTemplateMode, () => string> = {
     subdomain: () => (base.hostname.startsWith("[") ? "" : `https://${slug}.${base.hostname}`),
-    hostPort: () => (effectivePort ? `http://${base.hostname}:${effectivePort}` : `http://${base.hostname}`),
+    hostPort: () => hostPortUrl("http"),
+    hostPortHttps: () => hostPortUrl("https"),
     path: () => `${base.protocol}//${base.hostname}${base.port ? `:${base.port}` : ""}${base.pathname}/${slug}`,
   };
   return modeBuilders[mode]();

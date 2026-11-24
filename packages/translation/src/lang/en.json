@@ -2008,6 +2008,7 @@
       "example": "Example: {url}",
       "urlModeLabel": "Service address pattern",
       "hostPort": "Same host, different ports",
+      "hostPortHttps": "Services use HTTPS on their ports",
       "subdomain": "One subdomain per service",
       "path": "One path per service"
     },

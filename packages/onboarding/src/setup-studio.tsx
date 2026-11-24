@@ -76,6 +76,7 @@ import type {
 import {
   buildAppUrl,
   buildIntegrationUrl,
+  isHostPortMode,
   getAllSecretKindOptions,
   getDefaultWidgetConfig,
   getIntegrationApiKeyUrl,
@@ -220,7 +221,7 @@ export const SetupStudio = ({ environment, assistantConfiguration }: OnboardingS
           const labelPort = labelUrl && new URL(labelUrl).port;
           if (port === undefined && labelPort) port = Number(labelPort);
           let generatedUrl = app.suggestedUrl;
-          if (serverOrigin && (urlMode !== "hostPort" || port !== undefined || !labelUrl)) {
+          if (serverOrigin && (!isHostPortMode(urlMode) || port !== undefined || !labelUrl)) {
             generatedUrl = buildAppUrl(app.detectedType ?? app.containerName, serverOrigin, urlMode, port);
           }
           return [
