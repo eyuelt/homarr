@@ -117,7 +117,9 @@ updating a Homarr resource still requires confirmation. If one endpoint is unava
 endpoints remain visible.
 
 The `homarr.hide` label excludes a container. Other `homarr.*` labels can provide apps, integrations, groups, and widgets
-during onboarding; see [Docker label discovery](/docs/integrations/docker-labels).
+during onboarding; see [Docker label discovery](/docs/integrations/docker-labels). On this page, `homarr.href` is the
+suggested address for a container and is how assisted setup recognizes an app that is already set up, including apps
+behind a reverse proxy or `tailscale serve`; see [`homarr.href`](/docs/integrations/docker-labels#homarrhref).
 
 ## Security
 

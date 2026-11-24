@@ -1,6 +1,6 @@
 ---
 title: "Docker labels"
-description: "Discover apps, integrations, and widgets from container labels during Homarr onboarding."
+description: "Discover apps, integrations, and widgets from container labels during Homarr onboarding and on the Docker page."
 ---
 
 # Docker label discovery
@@ -16,19 +16,19 @@ still be suggested from their image and published ports.
 
 `homarr.name` and `homarr.href` are required for label discovery. All other labels are optional.
 
-| Label                | Purpose                                                                    |
-| -------------------- | -------------------------------------------------------------------------- |
-| `homarr.name`        | App or integration display name                                            |
-| `homarr.href`        | Address opened by the app and used as the suggested integration address    |
-| `homarr.group`       | Container section that receives the selected app and compatible widget     |
-| `homarr.icon`        | App icon URL                                                               |
-| `homarr.description` | App description                                                            |
-| `homarr.ping`        | Address used for app status checks                                         |
-| `homarr.id`          | Stable source identifier; defaults to the Docker container ID              |
-| `homarr.board`       | Intended board name; see [Board targeting](#board-targeting)               |
-| `homarr.integration` | Homarr integration kind, for example `sonarr`                              |
-| `homarr.widget`      | Homarr widget kind to add when it supports the selected integration        |
-| `homarr.hide`        | Excludes the container when this label is present, regardless of its value |
+| Label                | Purpose                                                                                                   |
+| -------------------- | --------------------------------------------------------------------------------------------------------- |
+| `homarr.name`        | App or integration display name                                                                           |
+| `homarr.href`        | Address opened by the app and used as the suggested integration address; see [`homarr.href`](#homarrhref) |
+| `homarr.group`       | Container section that receives the selected app and compatible widget                                    |
+| `homarr.icon`        | App icon URL                                                                                              |
+| `homarr.description` | App description                                                                                           |
+| `homarr.ping`        | Address used for app status checks                                                                        |
+| `homarr.id`          | Stable source identifier; defaults to the Docker container ID                                             |
+| `homarr.board`       | Intended board name; see [Board targeting](#board-targeting)                                              |
+| `homarr.integration` | Homarr integration kind, for example `sonarr`                                                             |
+| `homarr.widget`      | Homarr widget kind to add when it supports the selected integration                                       |
+| `homarr.hide`        | Excludes the container when this label is present, regardless of its value                                |
 
 `homarr.icon` also sets the container icon in the [Docker stats](/docs/widgets/docker-containers) widget, with or
 without the other labels. `homepage.icon` is used when `homarr.icon` is absent. Without either label, the widget
@@ -36,6 +36,34 @@ matches the image name against the icon library.
 
 Unknown integration and widget kinds are ignored. Do not put API keys, passwords, or other secrets in labels. Enter
 credentials in onboarding, where Homarr stores them using its normal encrypted integration-secret flow.
+
+## `homarr.href`
+
+Set `homarr.href` to the exact address a browser opens from the app: the link the app's tile follows on a board. When
+the container serves several pages, use the one the tile should open, for example `https://server.example.com/admin`.
+When a reverse proxy, tunnel, or `tailscale serve` sits in front of the container, use the address of that entry point,
+not the container's published port.
+
+Homarr uses it in three places:
+
+- **Onboarding:** the app's address, unless the usual server address has been edited; then onboarding builds the
+  address from the server address instead. For integrations, onboarding prefers an address built from the usual server
+  address and falls back to `homarr.href`.
+- **Docker page, suggested address:** assisted setup suggests `homarr.href` unchanged instead of building an address
+  from the usual server address and URL pattern.
+- **Docker page, existing apps:** a container counts as set up when an existing app's address, or the address of an
+  integration of the detected kind, equals `homarr.href`.
+
+Addresses are compared as text, ignoring letter case, a trailing slash, and anything after `#`. Scheme, host, port, and
+path must all match, so `https://server.example.com/admin` does not match `https://server.example.com`. If an app's
+address or the label later changes, the container is suggested again. If several containers carry the same
+`homarr.href`, one app counts as all of them; put the label only on each app's main service. If several apps share the
+address, the Docker page reports the container as ambiguous instead of choosing one.
+
+Without the label, the Docker page builds addresses from the container's published ports and name. Those cannot see a
+reverse proxy or `tailscale serve`, so apps behind one are not recognized unless the label is set.
+
+On the Docker page, `homepage.href` is used when `homarr.href` is absent.
 
 ## Compose example
 
