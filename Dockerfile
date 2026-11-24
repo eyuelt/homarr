@@ -25,6 +25,8 @@ COPY --exclude=scripts/entrypoint.sh --exclude=scripts/run.sh --exclude=scripts/
 ARG SKIP_ENV_VALIDATION='true'
 ARG CI='true'
 ARG DISABLE_REDIS_LOGS='true'
+# Local builds: lets the Next.js compile get a bigger heap where build-next.mjs can't read cgroup limits (rootless BuildKit).
+ARG NODE_OPTIONS
 ARG TARGETPLATFORM
 RUN --mount=type=secret,id=TURBO_API,env=TURBO_API \
     --mount=type=secret,id=TURBO_TEAM,env=TURBO_TEAM \
