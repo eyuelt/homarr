@@ -42,6 +42,10 @@ const resolveIcon = (labels: Record<string, string>, useHomepageFallback: boolea
 
 export const resolveContainerIcon = (labels: Record<string, string>) => resolveIcon(labels, true);
 
+// The address a container's labels give for its app (homarr.href, else homepage.href).
+export const resolveContainerHref = (labels: Record<string, string>) =>
+  resolveLabelValue(labels, dockerLabels.href, homepageLabels.href, true);
+
 const parseIntegrationKind = (value: string | undefined): IntegrationKind | undefined =>
   value && integrationKindSet.has(value) ? (value as IntegrationKind) : undefined;
 

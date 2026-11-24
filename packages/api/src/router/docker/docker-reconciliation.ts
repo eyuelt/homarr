@@ -54,7 +54,11 @@ export const getDockerReconciliationAsync = async (db: Database) => {
       preferredPort: match ? getIntegrationDefaultPort(match.kind) : undefined,
     });
     const candidateUrls = [
-      ...new Set(urlCandidates.map(({ url }) => normalizeDockerServiceUrl(url)).filter((url) => url !== null)),
+      ...new Set(
+        [container.href, ...urlCandidates.map(({ url }) => url)]
+          .map((url) => normalizeDockerServiceUrl(url))
+          .filter((url) => url !== null),
+      ),
     ];
     const containerName = normalizeName(container.name);
     const uniqueName = containerNameCounts.get(containerName) === 1;

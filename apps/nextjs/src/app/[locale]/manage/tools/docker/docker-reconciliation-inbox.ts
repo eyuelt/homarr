@@ -31,11 +31,14 @@ interface DockerTemplateCandidate {
   container: {
     name: string;
     ports?: DockerServicePort[];
+    href?: string | null;
   };
   match: Pick<DockerServiceMatch, "kind"> | null;
 }
 
 export const getTemplateUrl = (candidate: DockerTemplateCandidate, serverOrigin: string, urlMode: UrlTemplateMode) => {
+  // A container's homarr.href label is the app's real address; the pattern is only a guess.
+  if (candidate.container.href) return candidate.container.href;
   if (!serverOrigin.trim()) return "";
 
   const tcpPorts = candidate.container.ports?.filter(({ Type }) => Type.toLowerCase() === "tcp") ?? [];

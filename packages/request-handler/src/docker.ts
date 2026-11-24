@@ -14,6 +14,7 @@ import {
   DockerSingleton,
   getContainerImageIconFallback,
   getContainerImageIconNamePattern,
+  resolveContainerHref,
   resolveContainerIcon,
 } from "@homarr/docker";
 
@@ -226,6 +227,7 @@ export const dockerContainersRequestHandler = createWidgetRequestHandler({
           endpointId: "demo",
           endpointName: "Demo Docker",
           resourceId: `demo:${container.id}`,
+          href: null,
         })),
         endpoints: [demoDockerEndpoint],
       };
@@ -528,6 +530,7 @@ export async function getContainersWithStatsAsync(
       memoryUsage,
       image: container.Image,
       ports: container.Ports as Dockerode.Port[] | undefined,
+      href: resolveContainerHref(container.Labels) ?? null,
     };
   });
 

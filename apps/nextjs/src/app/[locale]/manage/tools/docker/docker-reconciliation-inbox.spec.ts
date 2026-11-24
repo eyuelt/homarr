@@ -77,4 +77,21 @@ describe("Docker reconciliation inbox", () => {
       ),
     ).toBe("");
   });
+
+  test("suggests a container's homarr.href label as-is instead of the pattern", () => {
+    expect(
+      getTemplateUrl(
+        {
+          container: {
+            name: "goal-state",
+            ports: [{ PrivatePort: 8790, PublicPort: 8790, Type: "tcp" }],
+            href: "https://home.example.com/admin",
+          },
+          match: null,
+        },
+        "home.lan",
+        "hostPort",
+      ),
+    ).toBe("https://home.example.com/admin");
+  });
 });
