@@ -10,6 +10,8 @@ import { showErrorNotification, showSuccessNotification } from "@homarr/notifica
 import { useI18n } from "@homarr/translation/client";
 import { appHrefSchema } from "@homarr/validation/app";
 
+import { dockerAppFromContainer, dockerAppName } from "./docker-app-from-container";
+
 interface AddDockerAppToHomarrProps {
   selectedContainers: RouterOutputs["docker"]["getContainers"]["containers"];
   initialUrls?: (string | null)[];
@@ -27,6 +29,7 @@ export const AddDockerAppToHomarrModal = createModal<AddDockerAppToHomarrProps>(
       containerUrls: innerProps.selectedContainers.map((container, index) => {
         const initialUrl = innerProps.initialUrls?.[index];
         if (initialUrl !== undefined) return initialUrl;
+        if (container.href) return container.href;
 
         const candidates = buildDockerServiceUrlCandidates({
           containerName: container.name,
@@ -56,13 +59,9 @@ export const AddDockerAppToHomarrModal = createModal<AddDockerAppToHomarrProps>(
   });
   const handleSubmit = ({ containerUrls }: z.infer<typeof formSchema>) => {
     mutate(
-      innerProps.selectedContainers.map((container, index) => ({
-        name: container.name,
-        iconUrl: container.iconUrl,
-        description: null,
-        href: containerUrls[index] || null,
-        pingUrl: null,
-      })),
+      innerProps.selectedContainers.map((container, index) =>
+        dockerAppFromContainer(container, containerUrls[index] || null),
+      ),
     );
   };
   return (
@@ -83,13 +82,13 @@ export const AddDockerAppToHomarrModal = createModal<AddDockerAppToHomarrProps>(
                     styles={{ image: { objectFit: "contain" } }}
                     src={container.iconUrl}
                   >
-                    {container.name.at(0)?.toUpperCase()}
+                    {dockerAppName(container).at(0)?.toUpperCase()}
                   </Avatar>
                 }
                 key={container.id}
               >
                 <Group justify="space-between" wrap={"nowrap"}>
-                  <Text lineClamp={1}>{container.name}</Text>
+                  <Text lineClamp={1}>{dockerAppName(container)}</Text>
                   <TextInput {...inputProps} value={inputProps.value ?? ""} />
                 </Group>
               </List.Item>

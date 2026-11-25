@@ -2,7 +2,7 @@ export { listDiscoveredContainersAsync } from "./list-discovered-containers";
 export {
   createDockerSourceId,
   parseContainerLabels,
-  resolveContainerHref,
+  resolveContainerAppLabels,
   resolveContainerIcon,
   type ParseContainerLabelsOptions,
 } from "./parse-container-labels";

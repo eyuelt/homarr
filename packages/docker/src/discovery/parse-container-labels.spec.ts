@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { parseContainerLabels, resolveContainerHref } from "./parse-container-labels";
+import { parseContainerLabels, resolveContainerAppLabels } from "./parse-container-labels";
 
 const container = (Labels: Record<string, string>, Id = "container-1") => ({ Id, Labels });
 
@@ -151,14 +151,29 @@ describe("parseContainerLabels", () => {
   });
 });
 
-describe("resolveContainerHref", () => {
-  it("returns the homarr.href label", () => {
-    expect(resolveContainerHref({ "homarr.href": " https://home.example.com/admin " })).toBe(
-      "https://home.example.com/admin",
-    );
+describe("resolveContainerAppLabels", () => {
+  it("reads the app's homarr labels", () => {
+    expect(
+      resolveContainerAppLabels({
+        "homarr.name": "goal-state",
+        "homarr.href": " https://home.example.com/admin ",
+        "homarr.description": "Goals",
+        "homarr.ping": "https://home.example.com/healthz",
+      }),
+    ).toEqual({
+      name: "goal-state",
+      href: "https://home.example.com/admin",
+      description: "Goals",
+      pingUrl: "https://home.example.com/healthz",
+    });
   });
 
-  it("ignores homepage.href", () => {
-    expect(resolveContainerHref({ "homepage.href": "http://sonarr:8989" })).toBeUndefined();
+  it("ignores Homepage labels", () => {
+    expect(resolveContainerAppLabels({ "homepage.name": "Sonarr", "homepage.href": "http://sonarr:8989" })).toEqual({
+      name: undefined,
+      href: undefined,
+      description: undefined,
+      pingUrl: undefined,
+    });
   });
 });

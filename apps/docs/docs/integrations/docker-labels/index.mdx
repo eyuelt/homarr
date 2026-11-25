@@ -61,8 +61,17 @@ address or the label later changes, the container is suggested again. If several
 address, the Docker page reports the container as ambiguous instead of choosing one.
 
 Without the label, the Docker page builds addresses from the container's published ports and name. Those cannot see a
-reverse proxy or `tailscale serve`, so apps behind one are not recognized unless the label is set. The Docker page reads
-only `homarr.href`, not `homepage.href`.
+reverse proxy or `tailscale serve`, so apps behind one are not recognized unless the label is set.
+
+## Creating apps from the Docker page
+
+**Create app** on the Docker page, and **Add to Homarr** in its container table, fill the new app in from the same
+labels as onboarding: `homarr.name` for the name, `homarr.href` for the address, `homarr.description`, `homarr.ping`
+for status checks, and `homarr.icon`. Without `homarr.name`, the app is named after the container. A label value the
+app form would reject, such as a name over 64 characters or a ping address that is not `http` or `https`, is left out.
+
+Unlike onboarding, the Docker page only adds the app to **Manage → Apps**; add it to a board in edit mode. It reads only
+`homarr.*` labels, not the Homepage fallback.
 
 ## Compose example
 

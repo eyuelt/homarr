@@ -42,8 +42,14 @@ const resolveIcon = (labels: Record<string, string>, useHomepageFallback: boolea
 
 export const resolveContainerIcon = (labels: Record<string, string>) => resolveIcon(labels, true);
 
-// The address a container's homarr.href label gives for its app.
-export const resolveContainerHref = (labels: Record<string, string>) => readLabel(labels, dockerLabels.href);
+// What a container's homarr.* labels say about its app. The Docker page matches apps on `href` and fills new apps in
+// from all four, as onboarding does.
+export const resolveContainerAppLabels = (labels: Record<string, string>) => ({
+  name: readLabel(labels, dockerLabels.name),
+  href: readLabel(labels, dockerLabels.href),
+  description: readLabel(labels, dockerLabels.description),
+  pingUrl: readLabel(labels, dockerLabels.ping),
+});
 
 const parseIntegrationKind = (value: string | undefined): IntegrationKind | undefined =>
   value && integrationKindSet.has(value) ? (value as IntegrationKind) : undefined;

@@ -325,6 +325,9 @@ interface DockerContainer {
   image: string;
   ports: Port[] | undefined;
   href?: string | null;
+  appName?: string | null;
+  appDescription?: string | null;
+  appPingUrl?: string | null;
   iconUrl: string | null;
   cpuUsage: number;
   memoryUsage: number;

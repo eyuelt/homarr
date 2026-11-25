@@ -14,7 +14,7 @@ import {
   DockerSingleton,
   getContainerImageIconFallback,
   getContainerImageIconNamePattern,
-  resolveContainerHref,
+  resolveContainerAppLabels,
   resolveContainerIcon,
 } from "@homarr/docker";
 
@@ -228,6 +228,9 @@ export const dockerContainersRequestHandler = createWidgetRequestHandler({
           endpointName: "Demo Docker",
           resourceId: `demo:${container.id}`,
           href: null,
+          appName: null,
+          appDescription: null,
+          appPingUrl: null,
         })),
         endpoints: [demoDockerEndpoint],
       };
@@ -512,6 +515,7 @@ export async function getContainersWithStatsAsync(
     }
 
     const memoryUsage = calculateMemoryUsage(stats);
+    const appLabels = resolveContainerAppLabels(container.Labels);
 
     return {
       id: container.Id,
@@ -530,7 +534,10 @@ export async function getContainersWithStatsAsync(
       memoryUsage,
       image: container.Image,
       ports: container.Ports as Dockerode.Port[] | undefined,
-      href: resolveContainerHref(container.Labels) ?? null,
+      href: appLabels.href ?? null,
+      appName: appLabels.name ?? null,
+      appDescription: appLabels.description ?? null,
+      appPingUrl: appLabels.pingUrl ?? null,
     };
   });
 
