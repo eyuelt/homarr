@@ -2,20 +2,11 @@
 
 import type { ReactNode } from "react";
 import { useRef, useState } from "react";
-import {
-  Flex,
-  FloatingIndicator,
-  SegmentedControl,
-  Stack,
-  Switch,
-  Text,
-  TextInput,
-  UnstyledButton,
-} from "@mantine/core";
+import { Flex, FloatingIndicator, SegmentedControl, Stack, Text, TextInput, UnstyledButton } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 
 import type { UrlTemplateMode } from "@homarr/definitions";
-import { buildIntegrationUrl, isHostPortMode } from "@homarr/definitions";
+import { buildIntegrationUrl } from "@homarr/definitions";
 import { useI18n } from "@homarr/translation/client";
 
 import { normalizeServiceUrl } from "./discovery-selection";
@@ -114,7 +105,7 @@ export const ServiceUrlTemplate = ({
       </Flex>
       <SegmentedControl<UrlTemplateMode>
         aria-label={t("urlModeLabel")}
-        value={isHostPortMode(mode) ? "hostPort" : mode}
+        value={mode}
         onChange={(value) => {
           sounds.click();
           onModeChange(value);
@@ -130,16 +121,6 @@ export const ServiceUrlTemplate = ({
           { value: "path", label: t("path") },
         ]}
       />
-      {isHostPortMode(mode) && (
-        <Switch
-          label={t("hostPortHttps")}
-          checked={mode === "hostPortHttps"}
-          onChange={(event) => {
-            sounds.click();
-            onModeChange(event.currentTarget.checked ? "hostPortHttps" : "hostPort");
-          }}
-        />
-      )}
       {exampleUrl && (
         <Text size="xs" c="dimmed" style={{ overflowWrap: "anywhere" }}>
           {t("example", { url: exampleUrl })}

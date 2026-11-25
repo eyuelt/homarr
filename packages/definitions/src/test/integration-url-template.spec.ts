@@ -16,15 +16,6 @@ describe("buildIntegrationUrl", () => {
     expect(buildIntegrationUrl("sonarr", "192.168.1.1", "hostPort", 9999)).toBe("http://192.168.1.1:9999");
   });
 
-  it("builds HTTPS host-port URLs only when services use HTTPS", () => {
-    expect(buildAppUrl("My Service", "https://home.example.com", "hostPortHttps", 8444)).toBe(
-      "https://home.example.com:8444",
-    );
-    expect(buildAppUrl("My Service", "https://home.example.com", "hostPort", 8444)).toBe(
-      "http://home.example.com:8444",
-    );
-  });
-
   it("builds hostPort URL without port when none known", () => {
     expect(buildIntegrationUrl("mock", "192.168.1.1", "hostPort")).toBe("http://192.168.1.1");
   });
