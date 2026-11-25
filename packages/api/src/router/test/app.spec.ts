@@ -301,6 +301,35 @@ describe("create should create a new app with all arguments", () => {
   });
 });
 
+describe("createMany should create apps", () => {
+  test("should save each app's ping url", async () => {
+    // Arrange
+    const db = createDb();
+    const caller = appRouter.createCaller({
+      db,
+      deviceType: undefined,
+      session: createDefaultSession(["app-create"]),
+    });
+
+    // Act
+    await caller.createMany([
+      {
+        name: "Mantine",
+        description: "React components and hooks library",
+        iconUrl: "https://mantine.dev/favicon.svg",
+        href: "https://mantine.dev",
+        pingUrl: "https://mantine.dev/a",
+      },
+      { name: "No ping", description: null, iconUrl: "https://mantine.dev/favicon.svg", href: null, pingUrl: "" },
+    ]);
+
+    // Assert
+    const dbApps = await db.query.apps.findMany();
+    expect(dbApps.find(({ name }) => name === "Mantine")?.pingUrl).toBe("https://mantine.dev/a");
+    expect(dbApps.find(({ name }) => name === "No ping")?.pingUrl).toBe(null);
+  });
+});
+
 describe("update should update an app", () => {
   test("should update an app", async () => {
     // Arrange

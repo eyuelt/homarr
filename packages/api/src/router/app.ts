@@ -251,6 +251,7 @@ export const appRouter = createTRPCRouter({
           description: app.description,
           iconUrl: app.iconUrl ?? getIconForName(ctx.db, app.name).sync()?.url ?? defaultIcon,
           href: app.href,
+          pingUrl: app.pingUrl,
         })),
       );
     }),
