@@ -61,9 +61,8 @@ address or the label later changes, the container is suggested again. If several
 address, the Docker page reports the container as ambiguous instead of choosing one.
 
 Without the label, the Docker page builds addresses from the container's published ports and name. Those cannot see a
-reverse proxy or `tailscale serve`, so apps behind one are not recognized unless the label is set.
-
-On the Docker page, `homepage.href` is used when `homarr.href` is absent.
+reverse proxy or `tailscale serve`, so apps behind one are not recognized unless the label is set. The Docker page reads
+only `homarr.href`, not `homepage.href`.
 
 ## Compose example
 

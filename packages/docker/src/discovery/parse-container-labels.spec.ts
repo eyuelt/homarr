@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { parseContainerLabels } from "./parse-container-labels";
+import { parseContainerLabels, resolveContainerHref } from "./parse-container-labels";
 
 const container = (Labels: Record<string, string>, Id = "container-1") => ({ Id, Labels });
 
@@ -148,5 +148,17 @@ describe("parseContainerLabels", () => {
       integrationKind: undefined,
       widgetKind: undefined,
     });
+  });
+});
+
+describe("resolveContainerHref", () => {
+  it("returns the homarr.href label", () => {
+    expect(resolveContainerHref({ "homarr.href": " https://home.example.com/admin " })).toBe(
+      "https://home.example.com/admin",
+    );
+  });
+
+  it("ignores homepage.href", () => {
+    expect(resolveContainerHref({ "homepage.href": "http://sonarr:8989" })).toBeUndefined();
   });
 });
